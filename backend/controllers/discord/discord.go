@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	token      = fmt.Sprintf("Bot %s")
+	token      = fmt.Sprintf("Bot %s", os.Getenv("DISCORD_TOKEN"))
 	BotName    = "Tsukuyomi"
 	HelloWorld = "!helloworld"
 )
