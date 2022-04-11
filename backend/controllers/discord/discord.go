@@ -28,7 +28,6 @@ func init() {
 	session, err := GetSession()
 	if err != nil {
 		fmt.Println(err)
-		//logger.Log.Error("failed initialize discord api")
 	}
 
 	session.AddHandler(onMessageCreate)
