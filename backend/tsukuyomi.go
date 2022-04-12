@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	_ "github.com/lib/pq"
+	"go.uber.org/zap"
 	"tsukuyomi/ent"
 	"tsukuyomi/server"
 )
 
 func main() {
-	fmt.Println("Running application")
 	// Logger setting
+	logger, _ := zap.NewDevelopment()
+	logger.Info("Running application")
 
 	// Initialize Database
 	if err := ent.Init(); err != nil {
@@ -21,5 +23,5 @@ func main() {
 	if err := server.Init(); err != nil {
 		panic(err)
 	}
-	fmt.Println("Stopping application")
+	logger.Info("Stopping application")
 }
