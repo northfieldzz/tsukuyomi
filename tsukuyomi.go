@@ -1,26 +1,31 @@
 package main
 
 import (
-	"fmt"
 	_ "github.com/lib/pq"
-	"go.uber.org/zap"
 	"tsukuyomi/ent"
+	"tsukuyomi/log"
 	"tsukuyomi/server"
 )
 
 func main() {
 	// Logger setting
-	logger, _ := zap.NewDevelopment()
+	if err := log.Init(); err != nil {
+		panic(err)
+	}
+	logger := log.GetLogger()
 	logger.Info("Running application")
 
 	// Initialize Database
 	if err := ent.Init(); err != nil {
-		fmt.Println("aaa")
+		logger.Panic("Failed initialized database")
 		panic(err)
 	}
+	client := ent.GetClient()
+	defer ent.Close(client)
 
 	// Initialize Router
 	if err := server.Init(); err != nil {
+		logger.Panic("Failed initialized server")
 		panic(err)
 	}
 	logger.Info("Stopping application")

@@ -19,8 +19,7 @@ func NewRouter() (*gin.Engine, error) {
 	{
 		lineGroup := webhookGroup.Group("line")
 		{
-			lineGroup.POST("/v1", line.WebhookV1)
-			lineGroup.POST("/v2", line.WebhookV2)
+			lineGroup.POST("/callback", line.Callback)
 		}
 
 		//discordGroup := webhookGroup.Group("discord")

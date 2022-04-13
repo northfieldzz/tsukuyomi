@@ -1,6 +1,7 @@
-version: '3.1'
+version: '3.9'
 services:
-  db:
+  database:
+    container_name: tsukuyomi_test_db
     image: postgres:13
     restart: always
     ports:
@@ -10,19 +11,37 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-  application:
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  server:
+    container_name: tsukuyomi_test_server
     build: .
     depends_on:
-      - db
+      database:
+        condition: service_healthy
     ports:
       - "8080:8080"
     environment:
-      - VERSION=1.0.0
-  nginx:
-    build: nginx/.
-    depends_on:
-      - application
-    ports:
-      - "8080:80"
-    volumes:
-      - ./.docker/test/nginx:/u
+      - GIN_MODE=release
+      - VERSION=dev
+      - PORT=8080
+      - DATABASE_HOST=tsukuyomi_test_db
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=postgres
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_SSLMODE=disable
+      - DISCORD_TOKEN=
+      - LINEBOT_SECRET_KEY=
+      - LINEBOT_CHANNEL_ACCESS_TOKEN=
+#  nginx:
+#    build: nginx/.
+#    depends_on:
+#      - application
+#    ports:
+#      - "8080:80"
+#    volumes:
+#      - ./.docker/test/nginx:/u

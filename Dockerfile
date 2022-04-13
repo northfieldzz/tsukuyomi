@@ -5,7 +5,7 @@ RUN apt upgrade -y
 
 WORKDIR /go/src/tsukuyomi
 
-COPY backend .
+COPY . .
 RUN go mod download
 RUN go build tsukuyomi.go
 
