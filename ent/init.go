@@ -24,14 +24,14 @@ func Init() error {
 		os.Getenv("DATABASE_SSLMODE"),
 	))
 	if err != nil {
-		logger.Error(fmt.Sprintf("failed connect database: %v", err))
+		logger.Error(fmt.Sprintf("Failed connect database: %v", err))
 		return err
 	}
 	err = createSchema(database)
 	if err != nil {
 		return err
 	}
-	logger.Info("Finish initialize database")
+	logger.Debug("Finish initialize database")
 	return nil
 }
 
@@ -39,18 +39,18 @@ func Close(client *Client) {
 	logger := log.GetLogger()
 	err := client.Close()
 	if err != nil {
-		logger.Error(fmt.Sprintf("failed disconnect database: %v", err))
+		logger.Error(fmt.Sprintf("Failed disconnect database: %v", err))
 	}
-	logger.Info("Closed Database connection")
+	logger.Debug("Closed Database connection")
 }
 
 func createSchema(client *Client) error {
 	logger := log.GetLogger()
 	if err := client.Schema.Create(context.Background(), migrate.WithForeignKeys(false)); err != nil {
-		logger.Info(fmt.Sprintf("failed create schema: %v", err))
+		logger.Error(fmt.Sprintf("Failed create schema: %v", err))
 		return err
 	}
-	logger.Info("Success create schema")
+	logger.Debug("Success create schema")
 	return nil
 }
 

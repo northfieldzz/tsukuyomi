@@ -13,7 +13,7 @@ func main() {
 		panic(err)
 	}
 	logger := log.GetLogger()
-	logger.Info("Running application")
+	logger.Debug("Running application")
 
 	// Initialize Database
 	if err := ent.Init(); err != nil {
@@ -23,10 +23,10 @@ func main() {
 	client := ent.GetClient()
 	defer ent.Close(client)
 
-	// Initialize Router
+	// Initialize Server
 	if err := server.Init(); err != nil {
 		logger.Panic("Failed initialized server")
 		panic(err)
 	}
-	logger.Info("Stopping application")
+	logger.Debug("Stopping application")
 }

@@ -16,7 +16,6 @@ func eventFollow(event *linebot.Event) error {
 	ctx := context.Background()
 	switch event.Source.Type {
 	case linebot.EventSourceTypeUser:
-		logger.Info("Entry Event source type")
 		userId := event.Source.UserID
 		users, err := client.LineUser.Query().Where(lineuser.ID(userId)).All(ctx)
 		if err != nil {
@@ -38,7 +37,6 @@ func eventFollow(event *linebot.Event) error {
 		}
 	case linebot.EventSourceTypeGroup:
 	case linebot.EventSourceTypeRoom:
-		logger.Info("Entry Event source group or room")
 	}
 	return nil
 }
