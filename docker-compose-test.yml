@@ -37,6 +37,7 @@ services:
       - DISCORD_TOKEN=
       - LINEBOT_SECRET_KEY=
       - LINEBOT_CHANNEL_ACCESS_TOKEN=
+      - GOOGLE_API_KEY=
 #  nginx:
 #    build: nginx/.
 #    depends_on:
