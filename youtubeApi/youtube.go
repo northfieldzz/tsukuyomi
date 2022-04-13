@@ -8,7 +8,7 @@ import (
 )
 
 func GetService() (*youtube.Service, error) {
-	apiKey := os.Getenv("YOUTUBE_API_KEY")
+	apiKey := os.Getenv("GOOGLE_API_KEY")
 	service, err := youtube.NewService(context.Background(), option.WithAPIKey(apiKey))
 	if err != nil {
 		return nil, err
