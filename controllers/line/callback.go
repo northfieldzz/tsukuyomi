@@ -1,7 +1,6 @@
 package line
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
@@ -44,7 +43,6 @@ func Callback(c *gin.Context) {
 		}
 	}
 	err = selector(events)
-	err = errors.New("")
 	if err != nil {
 		logger.Error(fmt.Sprintf("Failed Api Process%v", err))
 		c.JSON(http.StatusOK, gin.H{})

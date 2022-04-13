@@ -39,46 +39,47 @@ func eventMessage(event *linebot.Event) error {
 }
 
 func receivedTextMessage(event *linebot.Event, message *linebot.TextMessage) error {
-	logger := log.GetLogger()
 	client, err := GetClient()
 	if err != nil {
 		return err
 	}
-	text := ""
 	var r *regexp.Regexp
 	r = regexp.MustCompile(`Tsukuyomi`)
 	if r.MatchString(message.Text) {
-		text, err = makeMessageTsukuyomi(client, event.Source.UserID)
+		err = makeMessageTsukuyomi(client, event)
 	}
 	r = regexp.MustCompile(`youtube`)
 	if r.MatchString(message.Text) {
-		text, err = makeMessageYoutube(client, event.Source)
+		err = makeMessageYoutube(client, event.Source)
 	}
 	if err != nil {
 		return err
 	}
-	if _, err = client.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(text)).Do(); err != nil {
+	return nil
+}
+
+func makeMessageTsukuyomi(client *linebot.Client, event *linebot.Event) error {
+	logger := log.GetLogger()
+	profile, err := client.GetProfile(event.Source.UserID).Do()
+	if err != nil {
+		logger.Error(fmt.Sprintf("Failed get profile: %v", err))
+		return err
+	}
+	if _, err = client.ReplyMessage(
+		event.ReplyToken,
+		linebot.NewTextMessage(fmt.Sprintf("なんや、%s", profile.DisplayName)),
+	).Do(); err != nil {
 		logger.Error(fmt.Sprintf("Failed error send message: %v", err))
 		return err
 	}
 	return nil
 }
 
-func makeMessageTsukuyomi(client *linebot.Client, userId string) (string, error) {
-	logger := log.GetLogger()
-	profile, err := client.GetProfile(userId).Do()
-	if err != nil {
-		logger.Error(fmt.Sprintf("Failed get profile: %v", err))
-		return "", err
-	}
-	return fmt.Sprintf("なんや、%s", profile.DisplayName), nil
-}
-
-func makeMessageYoutube(client *linebot.Client, source *linebot.EventSource) (string, error) {
+func makeMessageYoutube(client *linebot.Client, source *linebot.EventSource) error {
 	video := youtubeApi.FetchLatestVideo()
 	uri, err := GenerateURL(video)
 	if err != nil {
-		return "", nil
+		return err
 	}
 	container := &linebot.BubbleContainer{
 		Type: linebot.FlexContainerTypeBubble,
@@ -149,10 +150,13 @@ func makeMessageYoutube(client *linebot.Client, source *linebot.EventSource) (st
 			},
 		},
 	}
-	if _, err := client.PushMessage(getReplyId(source), linebot.NewFlexMessage("tsukuyomiは告げています.", container)).Do(); err != nil {
-
+	if _, err := client.PushMessage(
+		getReplyId(source),
+		linebot.NewFlexMessage("tsukuyomiは告げています.", container),
+	).Do(); err != nil {
+		return err
 	}
-	return "", nil
+	return nil
 }
 
 func getReplyId(source *linebot.EventSource) string {
