@@ -47,7 +47,7 @@ func selector(events []*linebot.Event) error {
 		case linebot.EventTypeUnfollow:
 			return eventUnFollow(event)
 		case linebot.EventTypeMessage:
-			//return eventMessage(event)
+			return eventMessage(event)
 		case linebot.EventTypeJoin:
 		case linebot.EventTypeMemberJoined:
 		case linebot.EventTypeMemberLeft:
