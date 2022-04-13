@@ -17,27 +17,20 @@ func eventFollow(event *linebot.Event) error {
 	switch event.Source.Type {
 	case linebot.EventSourceTypeUser:
 		logger.Info("Entry Event source type")
-		users, err := client.LineUser.Query().Where(lineuser.IsActive(true)).All(ctx)
+		userId := event.Source.UserID
+		users, err := client.LineUser.Query().Where(lineuser.ID(userId)).All(ctx)
 		if err != nil {
 			logger.Error(fmt.Sprintf("Failed read users: %v", err))
 			return err
 		}
 		if len(users) == 0 {
-			logger.Info("Entry Event source type   Create")
-			_, err := client.LineUser.
-				Create().
-				SetID(event.Source.UserID).
-				Save(ctx)
+			_, err := client.LineUser.Create().SetID(userId).Save(ctx)
 			if err != nil {
 				logger.Error(fmt.Sprintf("Failed create user: %v", err))
 				return err
 			}
 		} else {
-			logger.Info("Entry Event source type recreate ")
-			_, err := client.LineUser.
-				UpdateOneID(event.Source.UserID).
-				SetIsActive(true).
-				Save(ctx)
+			_, err := client.LineUser.UpdateOneID(userId).SetIsActive(true).Save(ctx)
 			if err != nil {
 				logger.Error(fmt.Sprintf("Failed revival user: %v", err))
 				return err
