@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "github.com/lib/pq"
+	"tsukuyomi/controllers/discord"
 	"tsukuyomi/ent"
 	"tsukuyomi/log"
 	"tsukuyomi/server"
@@ -22,6 +23,12 @@ func main() {
 	}
 	client := ent.GetClient()
 	defer ent.Close(client)
+
+	if err := discord.Init(); err != nil {
+		logger.Panic("Failed initialized discord")
+		panic(err)
+	}
+	defer discord.Close()
 
 	// Initialize Server
 	if err := server.Init(); err != nil {

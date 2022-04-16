@@ -44,11 +44,11 @@ func receivedTextMessage(event *linebot.Event, message *linebot.TextMessage) err
 		return err
 	}
 	var r *regexp.Regexp
-	r = regexp.MustCompile(`Tsukuyomi`)
+	r = regexp.MustCompile(`^Tsukuyomi$`)
 	if r.MatchString(message.Text) {
 		err = makeMessageTsukuyomi(client, event)
 	}
-	r = regexp.MustCompile(`youtube`)
+	r = regexp.MustCompile(`^youtube$`)
 	if r.MatchString(message.Text) {
 		err = makeMessageYoutube(client, event.Source)
 	}
