@@ -1,2 +1,4 @@
 .idea/
 .docker/
+.env.release
+.env.debug
