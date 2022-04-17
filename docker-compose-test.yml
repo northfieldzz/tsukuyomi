@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   database:
-    container_name: tsukuyomi_test_db
+    container_name: tsukuyomi_db_test
     image: postgres:13
     restart: always
     ports:
@@ -17,7 +17,7 @@ services:
       timeout: 5s
       retries: 10
   server:
-    container_name: tsukuyomi_test_server
+    container_name: tsukuyomi_server_test
     build: .
     depends_on:
       database:
@@ -26,9 +26,10 @@ services:
       - "8080:8080"
     environment:
       - GIN_MODE=release
+      - ENV_MODE=test
       - VERSION=dev
       - PORT=8080
-      - DATABASE_HOST=tsukuyomi_test_db
+      - DATABASE_HOST=tsukuyomi_db_test
       - DATABASE_PORT=5432
       - DATABASE_NAME=postgres
       - DATABASE_USER=postgres

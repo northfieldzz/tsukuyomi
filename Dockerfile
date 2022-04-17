@@ -11,10 +11,14 @@ RUN go build tsukuyomi.go
 
 FROM ubuntu:latest
 
+RUN apt update && apt install -y ca-certificates
+
 WORKDIR /usr/local
 COPY --from=builder /go/src/tsukuyomi .
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-ENV PORT=8080
+ENV ENV_MODE=release
+COPY .env.${ENV_MODE} .env.${ENV_MODE}
 EXPOSE ${PORT}
 
 CMD ["./tsukuyomi"]
