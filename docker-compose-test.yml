@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   database:
-    container_name: tsukuyomi_test_db
+    container_name: tsukuyomi_db_test
     image: postgres:13
     restart: always
     ports:
@@ -17,8 +17,10 @@ services:
       timeout: 5s
       retries: 10
   server:
-    container_name: tsukuyomi_test_server
-    build: .
+    container_name: tsukuyomi_server_test
+    build:
+      context: .
+      dockerfile: build/tsukuyomi/Dockerfile
     depends_on:
       database:
         condition: service_healthy
@@ -26,18 +28,7 @@ services:
       - "8080:8080"
     environment:
       - GIN_MODE=release
-      - VERSION=dev
-      - PORT=8080
-      - DATABASE_HOST=tsukuyomi_test_db
-      - DATABASE_PORT=5432
-      - DATABASE_NAME=postgres
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=postgres
-      - DATABASE_SSLMODE=disable
-      - DISCORD_TOKEN=
-      - LINEBOT_SECRET_KEY=
-      - LINEBOT_CHANNEL_ACCESS_TOKEN=
-      - GOOGLE_API_KEY=
+      - ENV_MODE=test
 #  nginx:
 #    build: nginx/.
 #    depends_on:

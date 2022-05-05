@@ -6,16 +6,15 @@ import (
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 	"net/http"
 	"os"
-	"tsukuyomi/log"
+	"tsukuyomi/pkg/log"
 )
-
-func GetClient() (*linebot.Client, error) {
-	return linebot.New(os.Getenv("LINEBOT_SECRET_KEY"), os.Getenv("LINEBOT_CHANNEL_ACCESS_TOKEN"))
-}
 
 func Callback(c *gin.Context) {
 	logger := log.GetLogger()
-	client, err := GetClient()
+	client, err := linebot.New(
+		os.Getenv("LINEBOT_SECRET_KEY"),
+		os.Getenv("LINEBOT_CHANNEL_ACCESS_TOKEN"),
+	)
 	if err != nil {
 		message := fmt.Sprintf("Failed initialize line api: %v", err)
 		logger.Error(message)
@@ -42,7 +41,11 @@ func Callback(c *gin.Context) {
 			return
 		}
 	}
-	err = selector(events)
+	er := EventsResource{
+		Events: events,
+		Client: client,
+	}
+	err = er.Callback()
 	if err != nil {
 		logger.Error(fmt.Sprintf("Failed Api Process%v", err))
 		c.JSON(http.StatusOK, gin.H{})
@@ -50,21 +53,4 @@ func Callback(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{})
 	return
-}
-
-func selector(events []*linebot.Event) error {
-	for _, event := range events {
-		switch event.Type {
-		case linebot.EventTypeFollow:
-			return eventFollow(event)
-		case linebot.EventTypeUnfollow:
-			return eventUnFollow(event)
-		case linebot.EventTypeMessage:
-			return eventMessage(event)
-		case linebot.EventTypeJoin:
-		case linebot.EventTypeMemberJoined:
-		case linebot.EventTypeMemberLeft:
-		}
-	}
-	return nil
 }

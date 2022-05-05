@@ -8,6 +8,22 @@ import (
 )
 
 var (
+	// LineSessionsColumns holds the columns for the "line_sessions" table.
+	LineSessionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "type", Type: field.TypeInt8},
+		{Name: "user_id", Type: field.TypeString, Size: 64},
+		{Name: "group_id", Type: field.TypeString, Size: 64},
+		{Name: "room_id", Type: field.TypeString, Size: 64},
+		{Name: "create_at", Type: field.TypeTime},
+		{Name: "update_at", Type: field.TypeTime},
+	}
+	// LineSessionsTable holds the schema information for the "line_sessions" table.
+	LineSessionsTable = &schema.Table{
+		Name:       "line_sessions",
+		Columns:    LineSessionsColumns,
+		PrimaryKey: []*schema.Column{LineSessionsColumns[0]},
+	}
 	// LineUsersColumns holds the columns for the "line_users" table.
 	LineUsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true, Size: 64},
@@ -23,6 +39,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		LineSessionsTable,
 		LineUsersTable,
 	}
 )

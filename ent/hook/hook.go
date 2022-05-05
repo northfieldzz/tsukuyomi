@@ -8,6 +8,19 @@ import (
 	"tsukuyomi/ent"
 )
 
+// The LineSessionFunc type is an adapter to allow the use of ordinary
+// function as LineSession mutator.
+type LineSessionFunc func(context.Context, *ent.LineSessionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LineSessionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.LineSessionMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LineSessionMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The LineUserFunc type is an adapter to allow the use of ordinary
 // function as LineUser mutator.
 type LineUserFunc func(context.Context, *ent.LineUserMutation) (ent.Value, error)

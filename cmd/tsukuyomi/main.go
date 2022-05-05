@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"tsukuyomi/controllers/discord"
+	"os"
 	"tsukuyomi/ent"
-	"tsukuyomi/log"
-	"tsukuyomi/server"
+	"tsukuyomi/internal/tsukuyomi/server"
+	"tsukuyomi/pkg/discord"
+	"tsukuyomi/pkg/log"
 )
 
 func main() {
@@ -16,24 +19,26 @@ func main() {
 	logger := log.GetLogger()
 	logger.Debug("Running application")
 
+	if err := godotenv.Load(fmt.Sprintf("./configs/.env.%s", os.Getenv("ENV_MODE"))); err != nil {
+		logger.Panic("Failed load environment")
+	}
+
 	// Initialize Database
 	if err := ent.Init(); err != nil {
 		logger.Panic("Failed initialized database")
-		panic(err)
 	}
 	client := ent.GetClient()
 	defer ent.Close(client)
 
+	// Initialize Discord client
 	if err := discord.Init(); err != nil {
 		logger.Panic("Failed initialized discord")
-		panic(err)
 	}
 	defer discord.Close()
 
 	// Initialize Server
 	if err := server.Init(); err != nil {
 		logger.Panic("Failed initialized server")
-		panic(err)
 	}
 	logger.Debug("Stopping application")
 }

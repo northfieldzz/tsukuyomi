@@ -42,20 +42,6 @@ func (luu *LineUserUpdate) SetNillableIsActive(b *bool) *LineUserUpdate {
 	return luu
 }
 
-// SetCreateAt sets the "create_at" field.
-func (luu *LineUserUpdate) SetCreateAt(t time.Time) *LineUserUpdate {
-	luu.mutation.SetCreateAt(t)
-	return luu
-}
-
-// SetNillableCreateAt sets the "create_at" field if the given value is not nil.
-func (luu *LineUserUpdate) SetNillableCreateAt(t *time.Time) *LineUserUpdate {
-	if t != nil {
-		luu.SetCreateAt(*t)
-	}
-	return luu
-}
-
 // SetUpdateAt sets the "update_at" field.
 func (luu *LineUserUpdate) SetUpdateAt(t time.Time) *LineUserUpdate {
 	luu.mutation.SetUpdateAt(t)
@@ -154,13 +140,6 @@ func (luu *LineUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: lineuser.FieldIsActive,
 		})
 	}
-	if value, ok := luu.mutation.CreateAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: lineuser.FieldCreateAt,
-		})
-	}
 	if value, ok := luu.mutation.UpdateAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -197,20 +176,6 @@ func (luuo *LineUserUpdateOne) SetIsActive(b bool) *LineUserUpdateOne {
 func (luuo *LineUserUpdateOne) SetNillableIsActive(b *bool) *LineUserUpdateOne {
 	if b != nil {
 		luuo.SetIsActive(*b)
-	}
-	return luuo
-}
-
-// SetCreateAt sets the "create_at" field.
-func (luuo *LineUserUpdateOne) SetCreateAt(t time.Time) *LineUserUpdateOne {
-	luuo.mutation.SetCreateAt(t)
-	return luuo
-}
-
-// SetNillableCreateAt sets the "create_at" field if the given value is not nil.
-func (luuo *LineUserUpdateOne) SetNillableCreateAt(t *time.Time) *LineUserUpdateOne {
-	if t != nil {
-		luuo.SetCreateAt(*t)
 	}
 	return luuo
 }
@@ -335,13 +300,6 @@ func (luuo *LineUserUpdateOne) sqlSave(ctx context.Context) (_node *LineUser, er
 			Type:   field.TypeBool,
 			Value:  value,
 			Column: lineuser.FieldIsActive,
-		})
-	}
-	if value, ok := luuo.mutation.CreateAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: lineuser.FieldCreateAt,
 		})
 	}
 	if value, ok := luuo.mutation.UpdateAt(); ok {

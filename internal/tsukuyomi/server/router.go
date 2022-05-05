@@ -2,8 +2,8 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"tsukuyomi/controllers"
-	"tsukuyomi/controllers/line"
+	"tsukuyomi/internal/tsukuyomi/controllers"
+	"tsukuyomi/internal/tsukuyomi/line"
 )
 
 func NewRouter() (*gin.Engine, error) {
@@ -21,12 +21,6 @@ func NewRouter() (*gin.Engine, error) {
 		{
 			lineGroup.POST("/callback", line.Callback)
 		}
-
-		//discordGroup := webhookGroup.Group("discord")
-		//{
-		//	discordGroup.POST("/v1", discord.WebhookV1)
-		//	discordGroup.POST("/v2", discord.WebhookV2)
-		//}
 	}
 	return router, nil
 }

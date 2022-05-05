@@ -341,6 +341,9 @@ func (u *LineUserUpsertOne) UpdateNewValues() *LineUserUpsertOne {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(lineuser.FieldID)
 		}
+		if _, exists := u.create.mutation.CreateAt(); exists {
+			s.SetIgnore(lineuser.FieldCreateAt)
+		}
 	}))
 	return u
 }
@@ -597,6 +600,9 @@ func (u *LineUserUpsertBulk) UpdateNewValues() *LineUserUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(lineuser.FieldID)
 				return
+			}
+			if _, exists := b.mutation.CreateAt(); exists {
+				s.SetIgnore(lineuser.FieldCreateAt)
 			}
 		}
 	}))

@@ -1,7 +1,7 @@
-version: '3.1'
+version: '3.9'
 services:
   database:
-    container_name: tsukuyomi_dev_db
+    container_name: tsukuyomi_db_dev
     image: postgres:13
     restart: always
     ports:

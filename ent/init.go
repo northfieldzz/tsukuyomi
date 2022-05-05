@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 	"tsukuyomi/ent/migrate"
-	"tsukuyomi/log"
+	"tsukuyomi/pkg/log"
 )
 
 var database *Client
@@ -14,7 +14,7 @@ var database *Client
 func Init() error {
 	var err error
 	logger := log.GetLogger()
-	database, err = Open(dialect.Postgres, fmt.Sprintf(
+	url := fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 		os.Getenv("DATABASE_HOST"),
 		os.Getenv("DATABASE_PORT"),
@@ -22,7 +22,8 @@ func Init() error {
 		os.Getenv("DATABASE_NAME"),
 		os.Getenv("DATABASE_PASSWORD"),
 		os.Getenv("DATABASE_SSLMODE"),
-	))
+	)
+	database, err = Open(dialect.Postgres, url)
 	if err != nil {
 		logger.Error(fmt.Sprintf("Failed connect database: %v", err))
 		return err
@@ -57,3 +58,9 @@ func createSchema(client *Client) error {
 func GetClient() *Client {
 	return database
 }
+
+const (
+	ReplyTypeRakuten = 0
+	ReplyTypeYoutube = 1
+	ReplyTypeTwitter = 2
+)
