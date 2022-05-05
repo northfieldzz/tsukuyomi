@@ -4,6 +4,7 @@ package ent
 
 import (
 	"time"
+	"tsukuyomi/ent/linesession"
 	"tsukuyomi/ent/lineuser"
 	"tsukuyomi/ent/schema"
 )
@@ -12,6 +13,42 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	linesessionFields := schema.LineSession{}.Fields()
+	_ = linesessionFields
+	// linesessionDescUserID is the schema descriptor for user_id field.
+	linesessionDescUserID := linesessionFields[1].Descriptor()
+	// linesession.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
+	linesession.UserIDValidator = func() func(string) error {
+		validators := linesessionDescUserID.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(user_id string) error {
+			for _, fn := range fns {
+				if err := fn(user_id); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// linesessionDescGroupID is the schema descriptor for group_id field.
+	linesessionDescGroupID := linesessionFields[2].Descriptor()
+	// linesession.GroupIDValidator is a validator for the "group_id" field. It is called by the builders before save.
+	linesession.GroupIDValidator = linesessionDescGroupID.Validators[0].(func(string) error)
+	// linesessionDescRoomID is the schema descriptor for room_id field.
+	linesessionDescRoomID := linesessionFields[3].Descriptor()
+	// linesession.RoomIDValidator is a validator for the "room_id" field. It is called by the builders before save.
+	linesession.RoomIDValidator = linesessionDescRoomID.Validators[0].(func(string) error)
+	// linesessionDescCreateAt is the schema descriptor for create_at field.
+	linesessionDescCreateAt := linesessionFields[4].Descriptor()
+	// linesession.DefaultCreateAt holds the default value on creation for the create_at field.
+	linesession.DefaultCreateAt = linesessionDescCreateAt.Default.(func() time.Time)
+	// linesessionDescUpdateAt is the schema descriptor for update_at field.
+	linesessionDescUpdateAt := linesessionFields[5].Descriptor()
+	// linesession.DefaultUpdateAt holds the default value on creation for the update_at field.
+	linesession.DefaultUpdateAt = linesessionDescUpdateAt.Default.(func() time.Time)
 	lineuserFields := schema.LineUser{}.Fields()
 	_ = lineuserFields
 	// lineuserDescIsActive is the schema descriptor for is_active field.

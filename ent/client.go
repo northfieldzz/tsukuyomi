@@ -9,6 +9,7 @@ import (
 
 	"tsukuyomi/ent/migrate"
 
+	"tsukuyomi/ent/linesession"
 	"tsukuyomi/ent/lineuser"
 
 	"entgo.io/ent/dialect"
@@ -20,6 +21,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// LineSession is the client for interacting with the LineSession builders.
+	LineSession *LineSessionClient
 	// LineUser is the client for interacting with the LineUser builders.
 	LineUser *LineUserClient
 }
@@ -35,6 +38,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.LineSession = NewLineSessionClient(c.config)
 	c.LineUser = NewLineUserClient(c.config)
 }
 
@@ -67,9 +71,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:      ctx,
-		config:   cfg,
-		LineUser: NewLineUserClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		LineSession: NewLineSessionClient(cfg),
+		LineUser:    NewLineUserClient(cfg),
 	}, nil
 }
 
@@ -87,16 +92,17 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:      ctx,
-		config:   cfg,
-		LineUser: NewLineUserClient(cfg),
+		ctx:         ctx,
+		config:      cfg,
+		LineSession: NewLineSessionClient(cfg),
+		LineUser:    NewLineUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		LineUser.
+//		LineSession.
 //		Query().
 //		Count(ctx)
 //
@@ -119,7 +125,98 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.LineSession.Use(hooks...)
 	c.LineUser.Use(hooks...)
+}
+
+// LineSessionClient is a client for the LineSession schema.
+type LineSessionClient struct {
+	config
+}
+
+// NewLineSessionClient returns a client for the LineSession from the given config.
+func NewLineSessionClient(c config) *LineSessionClient {
+	return &LineSessionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `linesession.Hooks(f(g(h())))`.
+func (c *LineSessionClient) Use(hooks ...Hook) {
+	c.hooks.LineSession = append(c.hooks.LineSession, hooks...)
+}
+
+// Create returns a create builder for LineSession.
+func (c *LineSessionClient) Create() *LineSessionCreate {
+	mutation := newLineSessionMutation(c.config, OpCreate)
+	return &LineSessionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LineSession entities.
+func (c *LineSessionClient) CreateBulk(builders ...*LineSessionCreate) *LineSessionCreateBulk {
+	return &LineSessionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LineSession.
+func (c *LineSessionClient) Update() *LineSessionUpdate {
+	mutation := newLineSessionMutation(c.config, OpUpdate)
+	return &LineSessionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LineSessionClient) UpdateOne(ls *LineSession) *LineSessionUpdateOne {
+	mutation := newLineSessionMutation(c.config, OpUpdateOne, withLineSession(ls))
+	return &LineSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LineSessionClient) UpdateOneID(id int) *LineSessionUpdateOne {
+	mutation := newLineSessionMutation(c.config, OpUpdateOne, withLineSessionID(id))
+	return &LineSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LineSession.
+func (c *LineSessionClient) Delete() *LineSessionDelete {
+	mutation := newLineSessionMutation(c.config, OpDelete)
+	return &LineSessionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *LineSessionClient) DeleteOne(ls *LineSession) *LineSessionDeleteOne {
+	return c.DeleteOneID(ls.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *LineSessionClient) DeleteOneID(id int) *LineSessionDeleteOne {
+	builder := c.Delete().Where(linesession.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LineSessionDeleteOne{builder}
+}
+
+// Query returns a query builder for LineSession.
+func (c *LineSessionClient) Query() *LineSessionQuery {
+	return &LineSessionQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a LineSession entity by its id.
+func (c *LineSessionClient) Get(ctx context.Context, id int) (*LineSession, error) {
+	return c.Query().Where(linesession.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LineSessionClient) GetX(ctx context.Context, id int) *LineSession {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LineSessionClient) Hooks() []Hook {
+	return c.hooks.LineSession
 }
 
 // LineUserClient is a client for the LineUser schema.

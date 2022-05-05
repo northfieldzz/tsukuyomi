@@ -6,5 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// LineSession is the predicate function for linesession builders.
+type LineSession func(*sql.Selector)
+
 // LineUser is the predicate function for lineuser builders.
 type LineUser func(*sql.Selector)
