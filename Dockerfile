@@ -1,5 +1,7 @@
 FROM python:3.10-bullseye as base
 
+RUN apt-get update && apt-get upgrade -y
+
 ENV POETRY_HOME=/opt/poetry
 # poetryインストール
 RUN curl -sSL curl -sSL https://install.python-poetry.org | python -  \

@@ -1,5 +1,5 @@
 from os import environ
-from discord import Client, Intents
+from discord import Client
 
 
 class Discord(Client):
@@ -14,7 +14,3 @@ class Discord(Client):
             await message.channel.send('pong')
 
 
-intents = Intents.default()
-intents.message_content = True
-client = Discord(intents=intents)
-client.run(environ.get('DISCORD_TOKEN'))
