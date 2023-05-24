@@ -1,7 +1,10 @@
 from os import environ
-from flask import Flask
+from logging import getLogger
+from flask import Flask, jsonify
 from discord import Intents
 from tsukuyomi.v1.discord import Discord
+
+logger = getLogger(__name__)
 
 
 def create_app():
@@ -13,7 +16,7 @@ def create_app():
 
     @app.route('/version')
     def version():
-        return environ.get('VERSION')
+        return jsonify({'version': environ.get('VERSION')}), 200
 
     intents = Intents.default()
     intents.message_content = True
