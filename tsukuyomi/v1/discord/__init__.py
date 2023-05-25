@@ -1,5 +1,7 @@
 from os import environ
 from discord import Client
+from discord import ForumChannel
+import random
 
 
 class Discord(Client):
@@ -10,7 +12,22 @@ class Discord(Client):
         if message.author ==  self.user:
             return
 
-        if message.content == 'ping':
-            await message.channel.send('pong')
+        if 'pong' in message.content:
+            next_game_topic = None
+            for channel in list(self.get_all_channels()):
+                if isinstance(channel, ForumChannel):
+                    next_game_topic = channel
+                    break
+
+            # print(next_game_topic.threads)
+        
+            thread = random.choice(next_game_topic.threads)
+            await message.channel.send(thread.jump_url)
+        print(message.content)
+                # if isinstance(channel, ForumChannel):SS
+                #     print(channel)
+                #     print(type(channel))
+            #await message.channel.send('pong')
+
 
 
