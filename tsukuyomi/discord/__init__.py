@@ -1,7 +1,5 @@
-from os import environ
-from discord import Client
-from discord import ForumChannel
-import random
+from discord import Client, ForumChannel
+from random import choice
 
 
 class Discord(Client):
@@ -9,7 +7,7 @@ class Discord(Client):
         print("Logged on as")
 
     async def on_message(self, message):
-        if message.author ==  self.user:
+        if message.author == self.user:
             return
 
         if 'pong' in message.content:
@@ -20,14 +18,15 @@ class Discord(Client):
                     break
 
             # print(next_game_topic.threads)
-        
-            thread = random.choice(next_game_topic.threads)
+
+            thread = choice(next_game_topic.threads)
             await message.channel.send(thread.jump_url)
         print(message.content)
-                # if isinstance(channel, ForumChannel):SS
-                #     print(channel)
-                #     print(type(channel))
-            #await message.channel.send('pong')
+        # if isinstance(channel, ForumChannel):SS
+        #     print(channel)
+        #     print(type(channel))
+        # await message.channel.send('pong')
+
 
 
 

@@ -1,5 +1,5 @@
-from tsukuyomi import create_app
+from tsukuyomi import Tsukuyomi
 
 if __name__ == "__main__":
-    create_app()
-   # app.run(host='0.0.0.0', debug=True)
+    tsukuyomi = Tsukuyomi()
+    tsukuyomi.launch()
