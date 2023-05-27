@@ -1,6 +1,6 @@
-from tsukuyomi import create_app
-from waitress import serve
+from os import environ
+from tsukuyomi import Tsukuyomi
 
 if __name__ == '__main__':
-    app = create_app()
-    serve(app, host='0.0.0.0', port=80)
+    tsukuyomi = Tsukuyomi()
+    tsukuyomi.launch(env=environ['ENV'])

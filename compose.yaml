@@ -9,3 +9,8 @@ services:
     ports:
       - 8080:8080
     tty: true
+    environment:
+      PORT: 8080
+      VERSION: 0.0.1
+      ENV: development
+      DISCORD_TOKEN:
