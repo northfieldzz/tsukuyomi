@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for tsukuyomi on 2023-05-26T15:43:02+09:00
+# prod.toml app configuration file generated for tsukuyomi on 2023-05-26T15:43:02+09:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
