@@ -1,6 +1,7 @@
 FROM python:3.10-bullseye as base
 
 RUN apt-get update && apt-get upgrade -y
+RUN apt install ffmpeg -y
 
 ENV POETRY_HOME=/opt/poetry
 # poetryインストール
