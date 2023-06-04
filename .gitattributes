@@ -1,0 +1,11 @@
+# デフォルトの改行コードをLFにする。
+* text=auto eol=lf
+
+# Linuxシェル
+*.sh    text eol=lf
+*.python text eol=lf
+
+# Windowsシェル
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
