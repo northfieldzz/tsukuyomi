@@ -13,9 +13,11 @@ RUN curl -sSL curl -sSL https://install.python-poetry.org | python -  \
 WORKDIR /usr/local/src/app
 
 
+
 FROM base as development
 
 EXPOSE 8080
+
 
 
 FROM base as production
