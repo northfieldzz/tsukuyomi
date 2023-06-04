@@ -16,7 +16,6 @@ def create_api():
 
     @app.route('/version')
     def version():
-        logger.info('sample')
         return jsonify({'version': environ.get('VERSION')}), 200
 
     return app

@@ -1,16 +1,13 @@
 from os import environ
-from logging import getLogger, INFO
+from logging import config
 from multiprocessing import Process
 from waitress import serve
+from yaml import safe_load
 from tsukuyomi import create_api, create_discord_client
-
-root_logger = getLogger()
-root_logger.setLevel(INFO)
-
-logger = getLogger('waitress')
-logger.setLevel(INFO)
+from config import config_data
 
 if __name__ == '__main__':
+    config.dictConfig(safe_load(open(config_data).read()))
     api = create_api()
     discord_client = create_discord_client()
 
