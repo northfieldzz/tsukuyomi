@@ -34,9 +34,9 @@ export function registerGuild(client: Client) {
         }
     })
 
-    client.on(Events.GuildMemberRemove, async (member) => {
-
-    })
+    // client.on(Events.GuildMemberRemove, async (member) => {
+    //
+    // })
 
     client.on(Events.GuildScheduledEventCreate, async (event: GuildScheduledEvent) => {
         await handlePoint(event.creator!, event.guild!, GrantPointDefinitionType.CREATE_EVENT, false)
