@@ -1,4 +1,4 @@
-import {Channel, Client, Events, GatewayIntentBits, Partials, SlashCommandBuilder} from "discord.js";
+import {Client, Events, GatewayIntentBits, Partials} from "discord.js";
 import {registerGuild} from "./guild"
 import {handleInvite} from "../lib/prisma";
 import {registerThread} from "./thread";
