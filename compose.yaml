@@ -5,13 +5,9 @@ services:
       dockerfile: Dockerfile
       target: development
     volumes:
-      - .:/usr/local/src/app
-    ports:
-      - 8080:8080
+      - .:/usr/src/app
     tty: true
     env_file:
       - .env
-  voicevox:
-    image: voicevox/voicevox_engine:cpu-ubuntu20.04-latest
-    ports:
-      - "50021:50021"
+volumes:
+  database:
