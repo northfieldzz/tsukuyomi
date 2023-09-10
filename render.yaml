@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: tsukuyomi
-    env: docker
-    plan: free
-    buildCommand: poetry install
-    startCommand: poetry run python wsgi.py
-    autoDeploy: true

@@ -1,26 +1,27 @@
-FROM python:3.11-bullseye as base
+FROM node:20-bullseye as base
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y ffmpeg
-
-ENV POETRY_HOME=/opt/poetry
-# poetryインストール
-RUN curl -sSL curl -sSL https://install.python-poetry.org | python - && cd /usr/local/bin && ln -s /opt/poetry/bin/poetry && poetry config virtualenvs.create false
-
-WORKDIR usr/local/src/app
-
+WORKDIR /usr/src/app
 
 
 FROM base as development
 
-EXPOSE 8080
 
+FROM base as builder
+
+COPY . .
+RUN yarn install
+RUN yarn compile
+ENTRYPOINT yarn start
 
 
 FROM base as production
 
-COPY . .
+ENV fly_launch_runtime="nodejs"
+ENV NODE_ENV production
 
-RUN poetry install
-EXPOSE 80
-ENTRYPOINT poetry run python wsgi.py
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app /usr/src/app
+ENTRYPOINT yarn start
+
+CMD yarn start

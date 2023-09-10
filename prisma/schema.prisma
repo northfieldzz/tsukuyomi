@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Point {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.VarChar(19)
+  guildId   String   @db.VarChar(19)
+  value     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@unique([userId, guildId])
+}
+
+model Invite {
+  code      String    @id @db.VarChar(16)
+  inviterId String?   @db.VarChar(19)
+  uses      Int       @default(0)
+  expires   DateTime?
+}
+
+model NotificationChannel {
+  id        String @id @default(uuid()) @db.Uuid
+  guildId   String @unique @db.VarChar(19)
+  channelId String @db.VarChar(19)
+}
