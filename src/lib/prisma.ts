@@ -54,7 +54,7 @@ export async function handlePoint(user: User | PartialUser, guild: Guild, type: 
         }
     })
     console.info(`Grant point: ${grantPoint} -> ${user.id}(${point.value})`)
-    await notify(guild.id, `${user.id}に${grantPoint}を付与しました． ${user.id}の所持pigは${point.value}です．`)
+    await notify(guild.id, `${user.globalName}に${grantPoint}を付与しました． ${user.globalName}の所持pigは${point.value}です．`)
 }
 
 export async function handleInvite(code: string, inviterId: string | null, uses: number | null) {
