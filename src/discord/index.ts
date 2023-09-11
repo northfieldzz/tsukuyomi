@@ -1,10 +1,7 @@
-import {Client, Events, GatewayIntentBits, Partials} from "discord.js";
-import {registerGuild} from "./guild"
-import {handleInvite} from "../lib/prisma";
-import {registerThread} from "./thread";
-import {registerMessage} from "./message";
+import TsukuyomiClient from "./structures/Clients";
+import {GatewayIntentBits, Partials} from "discord.js";
 
-const client = new Client({
+const client = new TsukuyomiClient({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
@@ -20,27 +17,6 @@ const client = new Client({
         Partials.Reaction
     ]
 })
-
-client.once(Events.ClientReady, async (client) => {
-    console.info('Ready discord client')
-    if (client.user) {
-        console.info(`bot user tag: ${client.user.tag}`)
-    }
-    const guilds = client.guilds.cache.map(guild => guild)
-    for (let guild of guilds) {
-        let invites = await guild.invites.fetch()
-        for (let invite of invites.map(invites => invites)) {
-            await handleInvite(invite.code, invite.inviterId, invite.uses)
-        }
-    }
-    await notify('', 'Tsukuyomi Ready!')
-    console.info('Register invite complete')
-})
-
-
-registerGuild(client)
-registerThread(client)
-registerMessage(client)
 
 export async function notify(guildId: string, message: string) {
     const channel = await client.channels.fetch('1148960300968726558')

@@ -1,9 +1,11 @@
-import {Client, Events, GuildScheduledEvent} from "discord.js";
-import {GrantPointDefinitionType, handleInvite, handlePoint, prisma} from "../lib/prisma";
-import {GuildScheduledEventStatus} from "discord-api-types/v10"
+import {Events, GuildMember} from "discord.js";
+import {GrantPointDefinitionType, handleInvite, handlePoint, prisma} from "../../lib/prisma";
+import TsukuyomiClient from "../structures/Clients";
+import {TsukuyomiEvent} from "../structures/Event";
 
-export function registerGuild(client: Client) {
-    client.on(Events.GuildMemberAdd, async (member) => {
+module.exports = new TsukuyomiEvent({
+    name: Events.GuildMemberAdd,
+    run: async (client: TsukuyomiClient, member: GuildMember) => {
         const guild = await member.guild.fetch()
         const discordInvites = await guild.invites.fetch()
         const conditionInvites = []
@@ -32,36 +34,5 @@ export function registerGuild(client: Client) {
             }
             await handleInvite(discordInvite.code, discordInvite.inviterId, discordInvite.uses)
         }
-    })
-
-    // client.on(Events.GuildMemberRemove, async (member) => {
-    //
-    // })
-
-    client.on(Events.GuildScheduledEventCreate, async (event: GuildScheduledEvent) => {
-        await handlePoint(event.creator!, event.guild!, GrantPointDefinitionType.CREATE_EVENT, false)
-    })
-
-    client.on(Events.GuildScheduledEventUpdate, async (oldEvent, newEvent) => {
-        switch (newEvent.status) {
-            case GuildScheduledEventStatus.Scheduled:
-                break
-            case GuildScheduledEventStatus.Active:
-                break
-            case GuildScheduledEventStatus.Completed:
-                await handlePoint(newEvent.creator!, newEvent.guild!, GrantPointDefinitionType.HOLD_EVENT, false)
-                break
-            case GuildScheduledEventStatus.Canceled:
-                console.info('canceled')
-                break
-            default:
-                break
-        }
-
-        console.log(oldEvent, newEvent);
-    })
-
-    client.on(Events.GuildScheduledEventDelete, async (event) => {
-        await handlePoint(event.creator!, event.guild!, GrantPointDefinitionType.CREATE_EVENT, true)
-    })
-}
+    }
+})

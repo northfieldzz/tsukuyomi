@@ -1,11 +1,8 @@
 import client from "./discord"
 import {prisma} from "./lib/prisma";
 
-async function main() {
-    await client.login(process.env.DISCORD_TOKEN)
-}
 
-main()
+client.start()
     .catch((e) => {
         throw e
     })
