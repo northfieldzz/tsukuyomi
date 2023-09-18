@@ -1,14 +1,14 @@
-import {Events, Message} from "discord.js";
+import {ClientEvents, Events, Message} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
 import {TsukuyomiEvent} from "../structures/Event";
 
+export class MessageCreate implements TsukuyomiEvent {
+    name: keyof ClientEvents = Events.MessageCreate
 
-module.exports = new TsukuyomiEvent({
-    name: Events.MessageCreate,
-    run: async (client: TsukuyomiClient, message: Message) => {
+    async run(client: TsukuyomiClient, message: Message) {
         if (message.author === client.user) {
             return
         }
         message.channel
     }
-})
+}

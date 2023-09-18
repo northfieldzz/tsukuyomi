@@ -23,5 +23,3 @@ ENV NODE_ENV production
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app /usr/src/app
 ENTRYPOINT yarn start
-
-CMD yarn start

@@ -1,59 +1,38 @@
-import {Client, ClientOptions, Collection, REST} from "discord.js";
-import path from "path"
-import requireAll from "require-all";
-import {TsukuyomiEvent} from "./Event";
-import {TsukuyomiCommand} from "./Command";
+import {Client, ClientOptions, Collection, REST} from "discord.js"
+import {TsukuyomiEvent} from "./Event"
+import {TsukuyomiCommand} from "./Command"
+import {events, commands} from "../config";
+
 
 export default class TsukuyomiClient extends Client {
-    // declare rest?: REST
     commands: Collection<string, TsukuyomiCommand> = new Collection()
 
     constructor(options: ClientOptions) {
-        super(options);
-
+        super(options)
     }
 
     async start() {
-        await this.resolveModules()
+        await this.register()
         const token = process.env.DISCORD_TOKEN
         await this.login(token)
-        this.rest = new REST().setToken(token!);
+        this.rest = new REST().setToken(token!)
     }
 
-    async resolveModules() {
-        const sharedSettings = {
-            recursive: true,
-            filter: /\w*.[tj]s/g
-        };
-        // Register events
-        requireAll({
-            ...sharedSettings,
-            dirname: path.join(__dirname, '../events'),
-            resolve: (event: TsukuyomiEvent) => {
-                this.on(event.name, async (...args) => {
-                    try {
-                        await event.run(this, ...args);
-                    } catch (error) {
-                        console.error(`An error occurred in '${event.name}' event.\n${error}\n`);
-                    }
-                })
-                console.info(`Set event handler ${event.name}`)
-            }
-        })
-
-        requireAll({
-            ...sharedSettings,
-            dirname: path.join(__dirname, '../commands'),
-            resolve: (command: TsukuyomiCommand) => {
-                if (command.disabled) {
-                    return
+    async register() {
+        for (let event of events) {
+            const ev = new event() as TsukuyomiEvent
+            this.on(ev.name, async (...args) => {
+                try {
+                    await ev.run(this, ...args);
+                } catch (error) {
+                    console.error(`An error occurred in '${ev.name}' event.\n${error}\n`);
                 }
-                if (command.permissions) {
-                    command.builder.setDefaultPermission(false)
-                }
-                this.commands.set(command.builder.name, command);
-                console.info(`Set command handler ${command.builder.name}`)
-            }
-        })
+            })
+            console.info(`Set event handler ${ev.name}`)
+        }
+        for (let command of commands) {
+            const com = new command as TsukuyomiCommand
+            this.commands.set(com.builder.name, com)
+        }
     }
 }
