@@ -1,4 +1,4 @@
-import client from "./discord"
+import client from "./discord/bot";
 import {prisma} from "./lib/prisma";
 
 

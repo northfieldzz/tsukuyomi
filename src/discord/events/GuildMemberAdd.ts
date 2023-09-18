@@ -1,11 +1,16 @@
-import {Events, GuildMember} from "discord.js";
-import {GrantPointDefinitionType, handleInvite, handlePoint, prisma} from "../../lib/prisma";
+import {ClientEvents, Events, GuildMember} from "discord.js";
+import {GrantPointDefinitionType, prisma} from "../../lib/prisma";
 import TsukuyomiClient from "../structures/Clients";
 import {TsukuyomiEvent} from "../structures/Event";
+import {notify} from "../bot";
+import {handlePoint} from "../../lib/prisma/Point";
+import {handleInvite} from "../../lib/prisma/Invite";
 
-module.exports = new TsukuyomiEvent({
-    name: Events.GuildMemberAdd,
-    run: async (client: TsukuyomiClient, member: GuildMember) => {
+export class GuildMemberAdd implements TsukuyomiEvent {
+    name: keyof ClientEvents = Events.GuildMemberAdd
+    point: number = GrantPointDefinitionType.INVITED
+
+    async run(client: TsukuyomiClient, member: GuildMember) {
         const guild = await member.guild.fetch()
         const discordInvites = await guild.invites.fetch()
         const conditionInvites = []
@@ -23,16 +28,18 @@ module.exports = new TsukuyomiEvent({
                     console.info(`No change detected: ${discordInvite.code}`)
                 } else {
                     // 招待数が増えている場合,ポイントの付与を行う．
-                    await handlePoint(discordInvite.inviter!, guild, GrantPointDefinitionType.INVITED, false)
+                    const point = await handlePoint(discordInvite.inviter!, guild, GrantPointDefinitionType.INVITED, false)
+                    await notify(guild.id, `${discordInvite.inviter?.globalName}が"${member.user.globalName}"を招待したので${this.point}を付与しました`)
                 }
             } else {
                 // Bot側で把握している招待はない場合
                 if (discordInvite.uses) {
                     // 招待数が１以上であればポイントの付与を行う．
-                    await handlePoint(discordInvite.inviter!, guild, GrantPointDefinitionType.INVITED, false)
+                    const point = await handlePoint(discordInvite.inviter!, guild, GrantPointDefinitionType.INVITED, false)
+                    await notify(guild.id, `${discordInvite.inviter?.globalName}が"${member.user.globalName}"を招待したので${this.point}を付与しました`)
                 }
             }
             await handleInvite(discordInvite.code, discordInvite.inviterId, discordInvite.uses)
         }
     }
-})
+}

@@ -33,3 +33,29 @@ model NotificationChannel {
   guildId   String @unique @db.VarChar(19)
   channelId String @db.VarChar(19)
 }
+
+model CharacterStatus {
+  id      String @id @default(uuid()) @db.Uuid
+  guildId String @db.VarChar(19)
+  userId  String @db.VarChar(19)
+  str     Int
+  con     Int
+  pow     Int
+  dex     Int
+  app     Int
+  siz     Int
+  int     Int
+  edu     Int
+  luk     Int
+  san     Int
+  ida     Int
+  know    Int
+  hp      Int
+  mov     Int
+  mp      Int
+  skl     Int
+  db      Int
+  build   Int
+
+  @@unique([guildId, userId])
+}
