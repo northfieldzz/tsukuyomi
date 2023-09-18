@@ -1,5 +1,5 @@
 import {TsukuyomiCommand} from "../structures/Command";
-import {CommandInteraction, SlashCommandBuilder, User} from "discord.js";
+import {CommandInteraction, SlashCommandBuilder} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
 import {prisma} from "../../lib/prisma";
 import {summary} from "../../lib/prisma/CharacterStatus";

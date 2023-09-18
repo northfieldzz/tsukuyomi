@@ -19,7 +19,7 @@ const rest = new REST().setToken(token);
 (async () => {
     try {
         console.log(`Started refreshing ${commands.length} application (/) commands.`)
-        const data = await rest.put(Routes.applicationGuildCommands(clientId, guildId), {body: commands})
+        await rest.put(Routes.applicationGuildCommands(clientId, guildId), {body: commands})
         console.log(`Successfully reloaded application (/) commands.`)
     } catch (error) {
         // And of course, make sure you catch and log any errors!

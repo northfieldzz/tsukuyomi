@@ -28,14 +28,14 @@ export class GuildMemberAdd implements TsukuyomiEvent {
                     console.info(`No change detected: ${discordInvite.code}`)
                 } else {
                     // 招待数が増えている場合,ポイントの付与を行う．
-                    const point = await handlePoint(discordInvite.inviter!, guild, GrantPointDefinitionType.INVITED, false)
+                    await handlePoint(discordInvite.inviter!, guild, GrantPointDefinitionType.INVITED, false)
                     await notify(guild.id, `${discordInvite.inviter?.globalName}が"${member.user.globalName}"を招待したので${this.point}を付与しました`)
                 }
             } else {
                 // Bot側で把握している招待はない場合
                 if (discordInvite.uses) {
                     // 招待数が１以上であればポイントの付与を行う．
-                    const point = await handlePoint(discordInvite.inviter!, guild, GrantPointDefinitionType.INVITED, false)
+                    await handlePoint(discordInvite.inviter!, guild, GrantPointDefinitionType.INVITED, false)
                     await notify(guild.id, `${discordInvite.inviter?.globalName}が"${member.user.globalName}"を招待したので${this.point}を付与しました`)
                 }
             }

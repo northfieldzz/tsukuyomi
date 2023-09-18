@@ -1,5 +1,5 @@
 import {TsukuyomiCommand} from "../structures/Command";
-import {CommandInteraction, SlashCommandBuilder, User} from "discord.js";
+import {CommandInteraction, SlashCommandBuilder} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
 import {prisma} from "../../lib/prisma";
 
@@ -49,7 +49,7 @@ export class PigPresent implements TsukuyomiCommand {
                 if (senderPoint.value < 0) {
                     throw new Error(`${sender.globalName}は${point}pigも持っていない貧乏人です`)
                 }
-                const receiverPoint = await prisma.point.upsert({
+                await prisma.point.upsert({
                     where: {
                         userId_guildId: {
                             userId: receiver.id,

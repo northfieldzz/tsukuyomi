@@ -5,8 +5,7 @@ import {prisma} from "./index";
 export async function handlePoint(
     user: User | PartialUser,
     guild: Guild, type: number,
-    negative: boolean,
-    isNotify: boolean = true
+    negative: boolean
 ): Promise<Point> {
     let grantPoint = type
     if (negative) {
