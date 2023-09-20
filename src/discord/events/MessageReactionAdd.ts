@@ -13,6 +13,16 @@ export class MessageReactionAdd implements TsukuyomiEvent {
     async run(client: TsukuyomiClient, reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) {
         const channel = await reaction.message.channel.fetch()
         if (channel.type === ChannelType.PublicThread) {
+            const author = await reaction.message.author?.fetch()
+            if (author) {
+                if (user.id === author.id) {
+                    console.info(`self reaction ${user.id}`)
+                    return
+                }
+            } else {
+                console.info('unknown author')
+                return
+            }
             await handlePoint(user, reaction.message.guild!, this.point, false)
             await notify(reaction.message.guildId!, `${user.globalName}がリアクションをしたので${this.point}を付与しました`)
         }
