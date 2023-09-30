@@ -4,7 +4,8 @@ import {prisma} from "./index";
 
 export async function handlePoint(
     user: User | PartialUser,
-    guild: Guild, type: number,
+    guild: Guild,
+    type: number,
     negative: boolean
 ): Promise<Point> {
     let grantPoint = type

@@ -1,4 +1,4 @@
-import {TsukuyomiCommand} from "../structures/Command";
+import {TsukuyomiCommand} from "../types/Command";
 import {CommandInteraction, SlashCommandBuilder} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
 import {prisma} from "../../lib/prisma";
@@ -10,16 +10,14 @@ export class StatusShow implements TsukuyomiCommand {
         .setDescription('ステータスを表示します．')
 
     async run(client: TsukuyomiClient, interaction: CommandInteraction) {
-        if (!interaction.guild) {
-            return await interaction.reply('特定のサーバから送信してください．')
-        } else {
+        if (interaction.guild) {
             await interaction.deferReply()
             await interaction.followUp('探してるよ～ん')
             const user = interaction.user
             const status = await prisma.characterStatus.findUnique({
                 where: {
                     guildId_userId: {
-                        guildId: interaction.guildId!,
+                        guildId: interaction.guild.id,
                         userId: user.id
                     }
                 }
@@ -29,6 +27,8 @@ export class StatusShow implements TsukuyomiCommand {
             } else {
                 return await interaction.followUp(summary(user.globalName, status))
             }
+        } else {
+            return await interaction.reply('特定のサーバから送信してください．')
         }
     }
 }

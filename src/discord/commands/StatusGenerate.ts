@@ -1,4 +1,4 @@
-import {TsukuyomiCommand} from "../structures/Command";
+import {TsukuyomiCommand} from "../types/Command";
 import {CommandInteraction, SlashCommandBuilder} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
 import {CharacterGenerator, summary} from "../../lib/prisma/CharacterStatus";
@@ -15,9 +15,8 @@ export class StatusGenerate implements TsukuyomiCommand {
         )
 
     async run(client: TsukuyomiClient, interaction: CommandInteraction) {
-        if (!interaction.guildId) {
-            return await interaction.reply('特定のサーバから送信してください．')
-        } else {
+        if (interaction.guildId) {
+            const guildId = interaction.guildId
             await interaction.deferReply()
             let target = interaction.options.getUser('target')
             if (!target) {
@@ -28,7 +27,7 @@ export class StatusGenerate implements TsukuyomiCommand {
                 const oldStatus = await prisma.characterStatus.findUnique({
                     where: {
                         guildId_userId: {
-                            guildId: interaction.guildId!,
+                            guildId: guildId,
                             userId: target!.id
                         }
                     }
@@ -40,12 +39,12 @@ export class StatusGenerate implements TsukuyomiCommand {
                 const newStatus = await prisma.characterStatus.upsert({
                     where: {
                         guildId_userId: {
-                            guildId: interaction.guildId!,
+                            guildId: guildId,
                             userId: target!.id
                         }
                     },
                     create: {
-                        guildId: interaction.guildId!,
+                        guildId: guildId,
                         userId: target!.id,
                         ...status
                     },
@@ -55,6 +54,8 @@ export class StatusGenerate implements TsukuyomiCommand {
                 })
                 await interaction.followUp(summary(target?.username, newStatus))
             })
+        } else {
+            return await interaction.reply('特定のサーバから送信してください．')
         }
     }
 }

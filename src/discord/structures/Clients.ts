@@ -1,6 +1,6 @@
-import {Client, ClientOptions, Collection, REST} from "discord.js"
-import {TsukuyomiEvent} from "./Event"
-import {TsukuyomiCommand} from "./Command"
+import {Client, ClientOptions, Collection, GuildMember, REST} from "discord.js"
+import {TsukuyomiEvent} from "../types/Event"
+import {TsukuyomiCommand} from "../types/Command"
 import {events, commands} from "../config";
 
 
@@ -19,7 +19,7 @@ export default class TsukuyomiClient extends Client {
     }
 
     async register() {
-        for (let event of events) {
+        for (const event of events) {
             const ev = new event() as TsukuyomiEvent
             this.on(ev.name, async (...args) => {
                 try {
@@ -30,9 +30,15 @@ export default class TsukuyomiClient extends Client {
             })
             console.info(`Set event handler ${ev.name}`)
         }
-        for (let command of commands) {
+        for (const command of commands) {
             const com = new command as TsukuyomiCommand
             this.commands.set(com.builder.name, com)
         }
     }
+}
+
+type Pig = number
+
+async function setPigPropertyToNickname(member: GuildMember, pig: Pig) {
+    await member.setNickname(`${member.user.username}@${pig}pig`)
 }

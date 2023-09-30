@@ -1,7 +1,7 @@
 import {ClientEvents, Events, GuildMember} from "discord.js";
 import {GrantPointDefinitionType, prisma} from "../../lib/prisma";
 import TsukuyomiClient from "../structures/Clients";
-import {TsukuyomiEvent} from "../structures/Event";
+import {TsukuyomiEvent} from "../types/Event";
 import {notify} from "../bot";
 import {handlePoint} from "../../lib/prisma/Point";
 import {handleInvite} from "../../lib/prisma/Invite";
@@ -14,12 +14,12 @@ export class GuildMemberAdd implements TsukuyomiEvent {
         const guild = await member.guild.fetch()
         const discordInvites = await guild.invites.fetch()
         const conditionInvites = []
-        for (let discordInvite of discordInvites.map(invite => invite)) {
+        for (const discordInvite of discordInvites.map(invite => invite)) {
             conditionInvites.push({code: discordInvite.code})
         }
         // Bot側で把握している招待
         const tsukuyomiInvites = await prisma.invite.findMany({where: {OR: conditionInvites}})
-        for (let discordInvite of discordInvites.map(invite => invite)) {
+        for (const discordInvite of discordInvites.map(invite => invite)) {
             const tsukuyomiInvite = tsukuyomiInvites.find(invite => discordInvite.code === invite.code)
             if (tsukuyomiInvite) {
                 // Bot側で把握している招待である場合

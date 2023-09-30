@@ -1,4 +1,4 @@
-import {TsukuyomiCommand} from "../structures/Command";
+import {TsukuyomiCommand} from "../types/Command";
 import {CommandInteraction, SlashCommandBuilder} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
 import {prisma} from "../../lib/prisma";
@@ -34,9 +34,8 @@ export class StatusUpdate implements TsukuyomiCommand {
 
 
     async run(client: TsukuyomiClient, interaction: CommandInteraction) {
-        if (!interaction.guildId) {
-            return await interaction.reply('特定のサーバから送信してください．')
-        } else {
+        if (interaction.guild) {
+            const guild = interaction.guild
             await interaction.deferReply()
             let target = interaction.options.getUser('target')
             if (!target) {
@@ -47,7 +46,7 @@ export class StatusUpdate implements TsukuyomiCommand {
                 const oldStatus = await prisma.characterStatus.findUnique({
                     where: {
                         guildId_userId: {
-                            guildId: interaction.guildId!,
+                            guildId: guild.id,
                             userId: target!.id
                         }
                     }
@@ -57,7 +56,6 @@ export class StatusUpdate implements TsukuyomiCommand {
                 } else {
                     await interaction.followUp(summary(`${target?.globalName} old`, oldStatus))
                 }
-
                 const status = {
                     // @ts-ignore
                     str: interaction.options.getInteger('str') ?? oldStatus.str,
@@ -99,12 +97,12 @@ export class StatusUpdate implements TsukuyomiCommand {
                 const newStatus = await prisma.characterStatus.upsert({
                     where: {
                         guildId_userId: {
-                            guildId: interaction.guildId!,
+                            guildId: guild.id,
                             userId: target!.id
                         }
                     },
                     create: {
-                        guildId: interaction.guildId!,
+                        guildId: guild.id,
                         userId: target!.id,
                         ...status
                     },
@@ -115,6 +113,8 @@ export class StatusUpdate implements TsukuyomiCommand {
                 await interaction.followUp('↓')
                 return await interaction.followUp(summary(`${target?.globalName} new`, newStatus))
             })
+        } else {
+            return await interaction.reply('特定のサーバから送信してください．')
         }
     }
 }

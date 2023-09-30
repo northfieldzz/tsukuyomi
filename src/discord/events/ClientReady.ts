@@ -1,7 +1,7 @@
 
 import {ClientEvents, Events, Routes} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
-import {TsukuyomiEvent} from "../structures/Event"
+import {TsukuyomiEvent} from "../types/Event"
 import {notify} from "../bot";
 import {handleInvite} from "../../lib/prisma/Invite";
 
@@ -18,9 +18,9 @@ export class ClientReady implements TsukuyomiEvent {
         for (const command of client.commands) {
             commands.push(command[1].builder.toJSON())
         }
-        for (let guild of guilds) {
-            let invites = await guild.invites.fetch()
-            for (let invite of invites.map(invites => invites)) {
+        for (const guild of guilds) {
+            const invites = await guild.invites.fetch()
+            for (const invite of invites.map(invites => invites)) {
                 await handleInvite(invite.code, invite.inviterId, invite.uses)
             }
             await client.rest.put(Routes.applicationCommands(process.env.DISCORD_APPLICATION_ID!), {body: commands})

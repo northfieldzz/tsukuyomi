@@ -1,5 +1,5 @@
 import {CommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder} from "discord.js";
-import TsukuyomiClient from "./Clients";
+import TsukuyomiClient from "../structures/Clients";
 
 export interface TsukuyomiCommand {
     builder: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup"> | SlashCommandSubcommandsOnlyBuilder

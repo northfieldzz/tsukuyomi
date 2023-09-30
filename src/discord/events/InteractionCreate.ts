@@ -1,6 +1,6 @@
 import {ClientEvents, CommandInteraction, Events} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
-import {TsukuyomiEvent} from "../structures/Event";
+import {TsukuyomiEvent} from "../types/Event";
 
 export class InteractionCreate implements TsukuyomiEvent {
     name: keyof ClientEvents = Events.InteractionCreate

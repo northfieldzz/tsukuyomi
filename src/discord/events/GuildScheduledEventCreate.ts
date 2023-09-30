@@ -1,7 +1,7 @@
 import {ClientEvents, Events, GuildScheduledEvent} from "discord.js";
 import {GrantPointDefinitionType} from "../../lib/prisma";
 import TsukuyomiClient from "../structures/Clients";
-import {TsukuyomiEvent} from "../structures/Event";
+import {TsukuyomiEvent} from "../types/Event";
 import {notify} from "../bot";
 import {handlePoint} from "../../lib/prisma/Point";
 
