@@ -59,3 +59,10 @@ model CharacterStatus {
 
   @@unique([guildId, userId])
 }
+
+model Meigen {
+  id         Int    @id @default(autoincrement())
+  userId     String @db.VarChar(19)
+  registerId String @db.VarChar(19)
+  content    String @db.Text
+}

@@ -17,28 +17,34 @@ import {SetNotifyChannel} from "./commands/SetNotifyChannel";
 import {StatusGenerate} from "./commands/StatusGenerate";
 import {StatusShow} from "./commands/StatusShow";
 import {StatusUpdate} from "./commands/StatusUpdate";
+import {MeigenAdd} from "./commands/MeigenAdd";
+import {MeigenList} from "./commands/MeigenList";
+import {MeigenRemove} from "./commands/MeigenRemove";
 
 export const events: Array<any> = [
-    ClientReady,
-    GuildMemberAdd,
-    GuildMemberRemove,
-    GuildScheduledEventCreate,
-    GuildScheduledEventDelete,
-    GuildScheduledEventUpdate,
-    InteractionCreate,
-    MessageCreate,
-    MessageReactionAdd,
-    MessageReactionRemove,
-    ThreadCreate,
-    ThreadDelete
+  ClientReady,
+  GuildMemberAdd,
+  GuildMemberRemove,
+  GuildScheduledEventCreate,
+  GuildScheduledEventDelete,
+  GuildScheduledEventUpdate,
+  InteractionCreate,
+  MessageCreate,
+  MessageReactionAdd,
+  MessageReactionRemove,
+  ThreadCreate,
+  ThreadDelete
 ]
 
 export const commands: Array<any> = [
-    PigGrant,
-    PigShow,
-    PigPresent,
-    SetNotifyChannel,
-    StatusGenerate,
-    StatusShow,
-    StatusUpdate
+  PigGrant,
+  PigShow,
+  PigPresent,
+  SetNotifyChannel,
+  StatusGenerate,
+  StatusShow,
+  StatusUpdate,
+  MeigenAdd,
+  MeigenList,
+  MeigenRemove
 ]

@@ -13,7 +13,7 @@
     "start": "node dist/index.js",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "clean": "rm -rf dist",
-    "migrate": "npx prisma"
+    "prisma": "npx prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.3.1",

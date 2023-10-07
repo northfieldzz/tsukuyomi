@@ -5,7 +5,7 @@ import {prisma} from "../../lib/prisma";
 
 export class PigPresent implements TsukuyomiCommand {
   builder = new SlashCommandBuilder()
-    .setName('present-pig')
+    .setName('pig-present')
     .setDescription('pigをプレゼントします')
     .addUserOption(option => option
       .setName('to')
