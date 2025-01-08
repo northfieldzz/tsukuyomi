@@ -1,4 +1,3 @@
-
 import {ClientEvents, Events, Routes} from "discord.js";
 import TsukuyomiClient from "../structures/Clients";
 import {TsukuyomiEvent} from "../structures/Event"
